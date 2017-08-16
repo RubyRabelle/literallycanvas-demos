@@ -1,0 +1,295 @@
+<html>
+  <head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <!-- stylesheet -->
+    <link href="../_assets/literallycanvas.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css" />
+    
+	<style type="text/css">
+      .fs-container {
+        width: 700px;
+		height: 450px;
+        margin: auto;
+      }
+      .literally {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+    </style>
+  </head>
+   <body>
+    <div class="container">
+		<div class="row">
+		
+			<h1>TDI Sketch</h1>
+			<div class="fs-container col-sm-9">
+			  <div id="lc" class="literally export"></div>
+			</div>
+			 
+			<div class="col-sm-3">
+				
+				<br><br>
+				<button type="button" class="btn btn-info" id="graphPaper">Load Graph Paper</button>
+				<br><br>
+			   <button type="button" class="btn btn-default" id="snap">Get Snapshot</button>
+				<br><br>
+				<button type="button" class="btn btn-warn" id="loadImage">Load Image</button>
+				<br><br>
+				<button type="button" class="btn btn-warn" id="loadBackgroundImage">Load Background Image</button>
+				<br><br>
+			   <label>Load Background Image:</label>
+				<input type="file" id="imageLoader" name="imageLoader"/>
+				<br><br>
+				<button type="button" class="btn btn-success" id="exportPNG">Export without Background</button>
+				<br><br>
+				<button type="button" class="btn btn-success" id="exportJPG">Export with Background</button>
+				<br><br>
+				<button type="button" class="btn btn-warn" id="clear">Clear Canvas</button>
+		   </div>
+	   </div>
+	   <br>
+	   <div class="row" style="display:block">
+			<h4>Temporary Canvas</h4>
+			<div class="fs-container col-sm-9">
+				<div id="lc2" class="literally export"></div>
+			</div>
+	   </div>
+	</div>
+	<br><br><br>
+	
+
+<!-- dependency: React.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-with-addons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Literally Canvas -->
+    <script src="../_js_libs/literallycanvas.js"></script>
+
+    <!-- kick it off -->
+    
+	 <script type="text/javascript">
+	  $(document).ready(function() { 
+			
+			LC.setDefaultImageURLPrefix('../_assets/lc-images');
+			
+			
+			//programatically insert background images here
+			//var backgroundImage = new Image()
+			//backgroundImage.src = '_assets/lc-images/bkg.png';
+			//set the image size to be viewed and exported 
+			var imageSize = {width: 600, height: 400};
+			var imageBounds = {
+				  x: 0, y: 0, width: imageSize.width, height: imageSize.height
+				};
+			
+			//set watermark
+			//var watermark = new Image()
+				//watermark.src = '../_assets/lc-images/bkg.png'
+			
+			var options = {
+				imageSize: imageSize,
+				primaryColor: '#00f',			//stroke color default '#000'(black)
+				secondaryColor: 'transparent',	//fill color - default '#fff' (white)
+				backgroundColor: 'transparent', //background color - defaults to transparent
+				backgroundShapes :[],
+				/*backgroundShapes: [			//List of shapes to display under all other shapes. They will not be affected by the Clear button, loadSnapshot(), or the eraser tool.
+					LC.createShape(
+					  'Image', {x: 0, y: 0, image: backgroundImage, scale: 1}),
+					LC.createShape(
+					  'Text', {
+						x: 20, y: 20, text: "Sketch:",
+						font: "bold 12px Helvetica"
+					  })
+				  ],*/
+				toolbarPosition: 'top',			//default toolbar position is 'bottom'
+				tools: [						//add, enable, or disable tools here
+						LC.tools.Pencil,
+						LC.tools.Eraser,
+						LC.tools.Line,
+						LC.tools.Rectangle,
+						LC.tools.Text,
+						LC.tools.Polygon,
+						//LC.tools.Pan,
+						LC.tools.Eyedropper
+				],
+				//strokeWidths: [1, 2, 3, 5, 30],	//default - [1, 2, 5, 10, 20, 30]
+				defaultStrokeWidth: 2,				//default - 5
+				//watermarkImage: watermark,
+				//watermarkScale: 1/window.devicePixelRatio, // to support retina displays
+				zoomStep: 0.2
+			};
+			 
+			 
+			//initialize the canvas			
+			var lc = LC.init(document.getElementById("lc"), options);
+			// create temporary drawing to render shape	
+			var lc2 = LC.init(document.getElementById("lc2"), options);
+			
+			  //add the image to the photo
+			  //var newImage = new Image()
+				//newImage.src = '_assets/lc-images/capitol.png';
+				//lc.saveShape(LC.createShape('Image', {x: 0, y: 0, image: newImage}));
+			  
+			  
+				
+			  //onsubmit function to view the exported image in new window
+			  $('#exportPNG').click(function() {
+				  $('#lc').literallycanvas(
+						{ backgroundShapes: []
+						 });
+				  var myimage = lc.getImage({includeWatermark: false}).toDataURL('image/png');
+				  console.log(myimage);
+				 // window.open(lc.getImage({includeWatermark: false}).toDataURL());
+				  window.open(myimage);
+				});
+			  
+			  $('#exportJPG').click(function() {
+				  var myimage = lc.getImage().toDataURL('image/jpeg');
+				  console.log(myimage);
+				 // window.open(lc.getImage({includeWatermark: false}).toDataURL());
+				  window.open(myimage);
+				});
+			  
+			  
+			  $("#graphPaper").click(function(){
+				var newImage = new Image()
+				newImage.src = '../_assets/lc-images/graph_paper.png';
+				lc.setWatermarkImage(newImage);
+				//$('.literally').literallycanvas({watermarkImage: newImage});
+			   });
+			   
+			   $("#clear").click(function(){
+				
+				lc.clear();
+				var newImage = new Image()
+				newImage.src = '../_assets/lc-images/clear_bkg.png';
+				lc.setWatermarkImage(newImage);
+			   });
+			   
+			   
+			    $("#snap").click(function(){
+					//localStorage.setItem('drawing', JSON.stringify(lc.getSnapshot()));
+					//console.log(JSON.stringify(lc.getSnapshot()));
+					var drawing = JSON.stringify(lc.getSnapshot(['shapes']));
+					console.log(drawing);
+					
+					
+					var newCanvas = LC.renderShapesToCanvas(
+					  LC.snapshotJSONToShapes(drawing),
+					  {x: 0, y: 0, width: 600, height: 400});
+					// Now you can pull out the image using a data URL:
+					var dataURL = newCanvas.toDataURL('image/png');
+					console.log(dataURL);
+					var newImage = new Image()
+					newImage.src = dataURL;
+					console.log(newImage.src);
+
+					
+					lc2.saveShape(LC.createShape('Image', {x: 10, y: 10, image: newImage}));
+					console.log('we are here');
+			   });
+			   
+			   $("#loadImage").click(function(){
+				loadImage(lc,'../_assets/lc-images/display_image.png' );
+				//var newImage = new Image()
+				//newImage.src = '../_assets/lc-images/display_image.png';
+				//lc.saveShape(LC.createShape('Image', {x: 0, y: 0, image: newImage}));
+			   });
+			   
+			   //this is broken
+			   $("#loadBackgroundImage").click(function(){
+					backgroundImage = new Image();
+					backgroundImage.src = '../_assets/lc-images/display_image.png';
+					backgroundShape = LC.createShape('Image', {x: 0, y: 0, image: backgroundImage});
+					
+					$('#lc').literallycanvas({backgroundShapes: [backgroundShape]});
+			   });
+	  
+		function loadImage(canvasName, img){
+			var newImage = new Image()
+			newImage.src = img;
+			canvasName.saveShape(LC.createShape('Image', {x: 0, y: 0, image: newImage}));
+		
+		}
+		
+		
+		//upload image from file
+		var imageLoader = document.getElementById('imageLoader');
+			imageLoader.addEventListener('change', handleImage, false);
+		var max_width = 600;
+		var max_height = 400;
+		var scale = 1.0;
+		var mime = 'image/png';
+		
+		function handleImage(e){
+			console.log('handleImage called');
+			var reader = new FileReader();
+			reader.onload = function(event){
+				
+				var img = new Image();
+				img.onload = function(){
+					
+					//resize image
+					if (img.width > img.height) {
+						console.log('image is landscape' + img.width + ' x ' + img.height);
+						if (img.width != max_width) {
+							//img.height *= max_width / width;
+							//img.width = max_width;
+							scale = max_width/img.width;
+						}
+					} else {
+						console.log('image is portrait' + img.width + ' x ' + img.height);
+						if (img.height != max_height) {
+							//img.width *= max_height / img.height;
+							//img.height = max_height;
+							scale = max_height / img.height;
+						}
+					}
+					console.log('resize to scale ' + scale);
+					
+					// create the shape
+					var resizedImage = LC.createShape('Image', {x: 0, y: 0, scale: scale, image: img});
+					console.log('resizedImage: '+resizedImage);
+
+					
+					lc2.saveShape(resizedImage);
+					
+					//copy new shape to jpeg file
+					var myimage = lc2.getImage().toDataURL('image/jpeg');
+					console.log(myimage);
+					
+					
+					//load resized image to original canvas
+					var newImage = new Image()
+					newImage.src = myimage;
+					lc.setWatermarkImage(newImage);
+					
+					
+				
+					
+					
+				}
+				img.src = event.target.result;
+			}
+			reader.readAsDataURL(e.target.files[0]);     
+		}
+		
+		
+		$( ".lc-clear.toolbar-button.fat-button" ).hide();
+		
+	   });
+	   
+	   
+	   
+    </script>
+	
+		
+	
+
+
+	
+  </body>
+</html>

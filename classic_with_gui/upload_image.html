@@ -1,0 +1,160 @@
+<html>
+  <head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <!-- stylesheet -->
+    <link href="../_assets/literallycanvas.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css" />
+    
+	<style type="text/css">
+      .fs-container {
+        width: 700px;
+		height: 450px;
+        margin: auto;
+      }
+      .literally {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+    </style>
+  </head>
+   <body>
+    <div class="container">
+	<div class="row">
+	
+	
+	
+	<h1>Upload Files</h1>
+	<h4>Option 1: upload the image as it stands</h4>
+	<label>Image File:</label><br/>
+	<input type="file" id="imageLoader" name="imageLoader"/>
+	<canvas id="imageCanvas"></canvas>
+	
+	
+	
+	<h4>Option 2</h4>
+	<div class="dragArea">
+		<h3>Drag & Drop File Here</h3>
+		<h4>Or Select File:</h4>
+		<div>
+			<input type="file" id="imageFile"/>
+		</div>
+	</div>
+	
+	<!-- dependency: React.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-with-addons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Literally Canvas -->
+    <script src="../_js_libs/literallycanvas.js"></script>
+
+    <!-- kick it off -->
+    
+<script type="text/javascript">
+// Required for drag and drop file access
+	
+$(document).ready(function() { 
+		
+		//upload images option 1
+		var imageLoader = document.getElementById('imageLoader');
+			imageLoader.addEventListener('change', handleImage, false);
+		var canvas = document.getElementById('imageCanvas');
+		var ctx = canvas.getContext('2d');
+		var max_width = 600;
+		var max_height = 400;
+		
+		function handleImage(e){
+			var reader = new FileReader();
+			reader.onload = function(event){
+				var img = new Image();
+				img.onload = function(){
+				// Clear canvas, and resize image	
+				var canvas2 = document.createElement('canvas'),
+						max_size = 544,// TODO : pull max size from a site config
+						width = img.width,
+						height = img.height;
+						console.log(width + ' x '+ height);
+					if (width > height) {
+						if (width > max_size) {
+							height *= max_size / width;
+							width = max_size;
+						}
+					} else {
+						if (height > max_size) {
+							width *= max_size / height;
+							height = max_size;
+						}
+					}
+					console.log('revised: '+ width + ' x '+ height);
+					canvas2.width = width;
+					canvas2.height = height;
+					canvas2.getContext('2d').drawImage(img, 0, 0, width, height);
+					var dataUrl = canvas2.toDataURL('image/jpeg');
+					console.log(dataUrl);
+					
+				}
+				img.src = event.target.result;
+			}
+			reader.readAsDataURL(e.target.files[0]);     
+		};
+
+	
+	
+		
+		var fileInput = $('#imageFile');
+		
+		fileInput.on('change', function(event) {
+			handleDrop(event.target.files);
+		});
+		resizeImage = function(file, size, callback) {
+			var fileTracker = new FileReader;
+			fileTracker.onload = function() {
+				var image = new Image();
+				image.onload = function(){
+					var canvas = document.createElement("canvas");
+					/*
+					if(image.height > size) {
+						image.width *= size / image.height;
+						image.height = size;
+					}
+					*/
+					if(image.width > size) {
+						image.height *= size / image.width;
+						image.width = size;
+					}
+					var ctx = canvas.getContext("2d");
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					canvas.width = image.width;
+					canvas.height = image.height;
+					ctx.drawImage(image, 0, 0, image.width, image.height);
+					callback(canvas.toDataURL("image/png"));
+				};
+				image.src = this.result;
+			}
+			fileTracker.readAsDataURL(file);
+			fileTracker.onabort = function() {
+				alert("The upload was aborted.");
+			}
+			fileTracker.onerror = function() {
+				alert("An error occured while reading the file.");
+			}
+		};
+		
+	
+		
+	
+	
+	
+	  
+});	   
+</script>
+	
+		
+	
+
+
+	
+  </body>
+</html>

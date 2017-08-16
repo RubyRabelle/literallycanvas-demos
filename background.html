@@ -1,0 +1,91 @@
+<html>
+  <head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <!-- stylesheet -->
+    <link href="_assets/literallycanvas.css" rel="stylesheet">
+
+    
+	<style type="text/css">
+      .fs-container {
+        width: 80%;
+        margin: auto;
+      }
+      .literally {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+    </style>
+  </head>
+   <body>
+    <div class="fs-container">
+      <div id="lc" class="literally export"></div>
+	  <form class="controls export">
+		<input type="submit" data-action="export-as-png" value="Export as PNG">
+	   </form>
+    </div>
+	
+	
+	
+
+
+
+<!-- dependency: React.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-with-addons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Literally Canvas -->
+    <script src="_js_libs/literallycanvas.js"></script>
+
+    <!-- kick it off -->
+    
+	 <script type="text/javascript">
+	  $(document).ready(function() { 
+			var backgroundImage = new Image()
+			//programatically insert background images here
+			backgroundImage.src = '_assets/lc-images/bkg.png';
+			 
+			var imageSize = {width: 600, height: 400};
+			var imageBounds = {
+				  x: 0, y: 0, width: imageSize.width, height: imageSize.height
+				};
+			 
+			  var lc = LC.init(document.getElementById("lc"), {
+				imageURLPrefix: '_assets/lc-images',
+				imageSize: imageSize,
+				toolbarPosition: 'top',
+				backgroundColor: '#fff',
+				defaultStrokeWidth: 2,
+				//strokeWidths: [1, 2, 3, 5, 30],
+				backgroundShapes: [
+					LC.createShape(
+					  'Image', {x: 0, y: 0, image: backgroundImage, scale: 1}),
+					LC.createShape(
+					  'Text', {
+						x: 20, y: 20, text: "Sketch:",
+						font: "bold 12px Helvetica"
+					  })
+				  ]
+			  });
+			  
+			  $('.controls.export [data-action=export-as-png]').click(function(e) {
+				  e.preventDefault();
+				  var myimage = lc.getImage().toDataURL('image/png');
+				  console.log(myimage);
+				  window.open(lc.getImage().toDataURL());
+				  window.open(myimage);
+				});
+			  
+	  
+	   });
+    </script>
+	
+		
+	
+
+
+	
+  </body>
+</html>

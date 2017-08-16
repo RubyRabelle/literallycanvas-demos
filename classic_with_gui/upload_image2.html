@@ -1,0 +1,101 @@
+<html>
+  <head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <!-- stylesheet -->
+    <link href="../_assets/literallycanvas.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css" />
+    
+	<style type="text/css">
+      .fs-container {
+        width: 700px;
+		height: 450px;
+        margin: auto;
+      }
+      .literally {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+    </style>
+  </head>
+   <body>
+    <div class="container">
+	<div class="row">
+	
+	
+	
+	<h1>Upload Files</h1>
+	<h4>Option 1: upload the image as it stands</h4>
+	<label>Image File:</label><br/>
+	<input type="file" id="imageLoader" name="imageLoader"/>
+	<canvas id="imageCanvas"></canvas>
+	
+	</div>
+	</div>
+	
+
+	
+	<!-- dependency: React.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-with-addons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Literally Canvas -->
+    <script src="../_js_libs/literallycanvas.js"></script>
+
+    <!-- kick it off -->
+    
+<script type="text/javascript">
+// Required for drag and drop file access
+	
+$(document).ready(function() { 
+		
+var imageLoader = document.getElementById('imageLoader');
+    imageLoader.addEventListener('change', handleImage, false);
+	
+var mime = "image/jpeg";
+var max_width = 600;
+var max_height = 400;	
+var canvas = document.getElementById('imageCanvas');
+var ctx = canvas.getContext('2d');
+
+
+function handleImage(e){
+    var reader = new FileReader();
+    reader.onload = function(event){
+		var img = new Image();
+		
+        img.onload = function(){
+			// Clear canvas, and resize image
+			ctx.clearRect(0, 0, max_width, max_height);
+			//ctx.drawImage(img,
+				//0, 0, img.width, img.height, // size of image
+				//0, 0, max_width, max_height // size of canvas
+			//);
+		
+			
+		
+		
+            //canvas.width = img.width;
+            //canvas.height = img.height;
+            ctx.drawImage(img,0,0, 600, img.height);
+        }
+        img.src = event.target.result;
+    }
+    reader.readAsDataURL(e.target.files[0]);     
+}
+	
+	
+	
+	  
+});	   
+</script>
+	
+		
+	
+
+
+	
+  </body>
+</html>

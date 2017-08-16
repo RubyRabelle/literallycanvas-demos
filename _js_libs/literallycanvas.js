@@ -3615,6 +3615,7 @@ setDefaultImageURLPrefix = function(newDefault) {
 
 init = function(el, opts) {
   var child, i, len, opt, ref;
+ 
   if (opts == null) {
     opts = {};
   }
@@ -3624,7 +3625,10 @@ init = function(el, opts) {
     }
   }
   ref = el.children;
+  console.log('lc-stuff: ' +ref);
+  console.log('ref length:' + ref.length);
   for (i = 0, len = ref.length; i < len; i++) {
+	  console.log(i +': ' +ref[i].value);
     child = ref[i];
     el.removeChild(child);
   }

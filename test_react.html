@@ -1,0 +1,54 @@
+<html>
+  <head>
+  <meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- stylesheet -->
+    <link href="_assets/literallycanvas.css" rel="stylesheet">
+
+    <!-- dependency: React.js -->
+    <script src="_js_libs/react-with-addons-0.14.7.js"></script>
+    <script src="_js_libs/react-dom-0.14.7.js"></script>
+    <script src="_js_libs/browser.min.js"></script>
+
+    <!-- Literally Canvas -->
+    <script src="_js_libs/literallycanvas.js"></script>
+  </head>
+  <body>
+  <div >
+  <h1>Drawing Tool</h1>
+  
+    <div id="root" ></div>
+
+	
+    <script type="text/babel">
+        ReactDOM.render(
+			
+            <div class="literally export">
+                <LC.LiterallyCanvasReactComponent imageURLPrefix="_assets/lc-images" />
+				
+            </div>,
+            document.getElementById('root'));
+    </script>
+
+	<div ></div>
+
+<form class="controls export">
+  <input type="submit" data-action="export-as-png" value="Export as PNG">
+</form>
+
+<script>
+  $(document).ready(function() {
+    var lc = LC.init(document.getElementsByClassName('literally export')[0]);
+    $('.controls.export [data-action=export-as-png]').click(function(e) {
+      e.preventDefault();
+      window.open(lc.getImage().toDataURL());
+    });
+  });
+</script>
+
+
+	
+	
+	</div>
+  </body>
+</html>
